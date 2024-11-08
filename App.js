@@ -7,41 +7,63 @@ class App extends Component{
   constructor(props){
     super(props);
     this.state = {
-      time: 0
+      
+      timer:null,
+      number:0,
+      mudarBtn: 'Iniciar',
     }
 
     this.iniciaTime = this.iniciaTime.bind(this)
+    this.limpaTimer = this.limpaTimer.bind(this)
 
   }
 
-  iniciaTime(){
-    setInterval(()=>{
-      this.setState({time:this.state.time + 1});
-    },1000)
+  iniciaTime() {
+    if (this.state.timer === null) {
+      const timer = setInterval(() => {
+        this.setState(prevState => ({
+          number: prevState.number + 0.1
+        }));
+      }, 100);
+
+      this.setState({
+        timer: timer,
+        mudarBtn: 'Parar',
+      });
+    } else {
+      clearInterval(this.state.timer);
+      this.setState({
+        timer: null,
+        mudarBtn: 'Iniciar',
+      });
+    }
   }
 
-  paraTime(){
-    clearInterval();
-    this.setState({time:0});
+  limpaTimer() {
+    clearInterval(this.state.timer);
+    this.setState({
+      timer: null,
+      number: 0,
+      mudarBtn: 'Iniciar',
+    });
   }
-
   render() {
     return(
       <View style={styles.main}>
         <View style={styles.container}>
           <Image style={styles.img} source={require("./assets/cronometro.png")}/>
-          <Text style={styles.cronom}>{this.state.time}</Text>
+          <Text style={styles.cronom}> {this.state.number.toFixed(1)} </Text>
         </View>
 
 
         <View style={styles.btnView}>
           <TouchableOpacity  style={styles.botao} onPress={this.iniciaTime}>
             <View style={styles.btnArea}>
-              <Text>Parar</Text>
+              <Text> {this.state.mudarBtn} </Text>
             </View>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.botao} onPress={this.state.time}>
+          <TouchableOpacity style={styles.botao} onPress={this.limpaTimer}>
             <View style={styles.btnArea}>
               <Text>Limpar</Text>
             </View>
@@ -49,12 +71,14 @@ class App extends Component{
         </View>
 
         
-        <Text style={styles.textoCrono}>Ultimo tempo: 3.70s</Text>
+        <Text style={styles.textoCrono}>Ultimo tempo: 0.0s</Text>
       
       </View>
     )
+  
+    }
+
   }
-}
 
 const styles = StyleSheet.create({
   main:{
